@@ -5,8 +5,10 @@
     "jsr:@std/bytes@^1.0.2": "1.0.5",
     "jsr:@std/encoding@^1.0.5": "1.0.7",
     "jsr:@std/path@^1.0.6": "1.0.8",
+    "npm:@types/node@*": "22.12.0",
     "npm:builtin-modules@3.3.0": "3.3.0",
     "npm:esbuild@0.25": "0.25.0",
+    "npm:moment@^2.30.1": "2.30.1",
     "npm:obsidian@^1.8.7": "1.8.7_@codemirror+state@6.5.2_@codemirror+view@6.36.3"
   },
   "jsr": {
@@ -130,6 +132,12 @@
     "@types/estree@1.0.6": {
       "integrity": "sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw=="
     },
+    "@types/node@22.12.0": {
+      "integrity": "sha512-Fll2FZ1riMjNmlmJOdAyY5pUbkftXslB5DgEzlIuNaiWhXd00FhWxVC/r4yV/4wBb9JfImTu+jiSvXTkJ7F/gA==",
+      "dependencies": [
+        "undici-types"
+      ]
+    },
     "@types/tern@0.23.9": {
       "integrity": "sha512-ypzHFE/wBzh+BlH6rrBgS5I/Z7RD21pGhZ2rltb/+ZrVM1awdZwjx7hE5XfuYgHWk9uvV5HLZN3SloevCAp3Bw==",
       "dependencies": [
@@ -172,27 +180,47 @@
     "moment@2.29.4": {
       "integrity": "sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w=="
     },
+    "moment@2.30.1": {
+      "integrity": "sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how=="
+    },
     "obsidian@1.8.7_@codemirror+state@6.5.2_@codemirror+view@6.36.3": {
       "integrity": "sha512-h4bWwNFAGRXlMlMAzdEiIM2ppTGlrh7uGOJS6w4gClrsjc+ei/3YAtU2VdFUlCiPuTHpY4aBpFJJW75S1Tl/JA==",
       "dependencies": [
         "@codemirror/state",
         "@codemirror/view",
         "@types/codemirror",
-        "moment"
+        "moment@2.29.4"
       ]
     },
     "style-mod@4.1.2": {
       "integrity": "sha512-wnD1HyVqpJUI2+eKZ+eo1UwghftP6yuFheBqqe+bWCotBjC2K1YnteJILRMs3SM4V/0dLEW1SC27MWP5y+mwmw=="
     },
+    "undici-types@6.20.0": {
+      "integrity": "sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg=="
+    },
     "w3c-keyname@2.2.8": {
       "integrity": "sha512-dpojBhNsCNN7T82Tm7k26A6G9ML3NkhDsnw9n/eoxSRlVBB4CEtIQ/KTCLI2Fwf3ataSXRhYFkQi3SlnFwPvPQ=="
     }
+  },
+  "redirects": {
+    "https://esm.sh/gh/obsidianmd/obsidian-api@master?target=denonext": "https://esm.sh/gh/obsidianmd/obsidian-api@9ab497e?target=denonext",
+    "https://esm.sh/obsidian-daily-notes-interface": "https://esm.sh/obsidian-daily-notes-interface@0.9.4",
+    "https://esm.sh/obsidian-daily-notes-interface/refs/heads/main/src/daily.ts": "https://esm.sh/obsidian-daily-notes-interface@0.9.4/refs/heads/main/src/daily.ts",
+    "https://esm.sh/obsidian-daily-notes-interface/refs/heads/main/src/parse.ts": "https://esm.sh/obsidian-daily-notes-interface@0.9.4/refs/heads/main/src/parse.ts"
+  },
+  "remote": {
+    "https://esm.sh/gh/obsidianmd/obsidian-api@9ab497e?target=denonext": "fabf6997a3adf11e45d11e3c4d58d0634ab98f9d72f3116f3694123818ccd457",
+    "https://esm.sh/obsidian-daily-notes-interface@0.9.4": "1a2e7248af89242de1e63bae5d7636a7ede58cd07b1eb5203ffcb2fb972bbc35",
+    "https://esm.sh/obsidian-daily-notes-interface@0.9.4/denonext/obsidian-daily-notes-interface.mjs": "01def69b1c1cf6459564281d1c50824f6a305473a152da904b30dca080829003",
+    "https://raw.githubusercontent.com/liamcain/obsidian-daily-notes-interface/refs/heads/main/src/daily.ts": "a962eb0095dacb6055433eed2839353e33a07c009fc9fc3f3449917621c74884",
+    "https://raw.githubusercontent.com/liamcain/obsidian-daily-notes-interface/refs/heads/main/src/parse.ts": "e8a9f1050edd862a7ec3e197aca6c69ee8a682b5816c87a39ceff50e280c1451"
   },
   "workspace": {
     "dependencies": [
       "jsr:@luca/esbuild-deno-loader@~0.11.1",
       "npm:builtin-modules@3.3.0",
       "npm:esbuild@0.25",
+      "npm:moment@^2.30.1",
       "npm:obsidian@^1.8.7"
     ]
   }
