@@ -1,0 +1,33 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-env --allow-read --allow-run esbuild.config.ts",
+    "build": "deno task dev production",
+    "version": "deno run --allow-read=. --allow-write=versions.json version-bump.ts && git add manifest.json versions.json"
+  },
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "lib": [
+      "DOM",
+      "ES5",
+      "ES6",
+      "ES7"
+    ]
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "lint": {
+    "rules": {
+      "tags": [
+        "recommended"
+      ]
+    }
+  },
+  "imports": {
+    "@luca/esbuild-deno-loader": "jsr:@luca/esbuild-deno-loader@^0.11.1",
+    "builtin-modules": "npm:builtin-modules@3.3.0",
+    "esbuild": "npm:esbuild@^0.25.0",
+    "obsidian": "npm:obsidian@^1.8.7"
+  }
+}
