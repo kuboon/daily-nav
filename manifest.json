@@ -1,9 +1,9 @@
 {
 	"id": "daily-nav",
 	"name": "Daily Nav",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
+	"description": "Add commands to open yesterday/tomorrow's daily notes.",
 	"author": "kuboon",
 	"authorUrl": "https://o.kbn.one",
 	"fundingUrl": "https://github.com/sponsors/kuboon",

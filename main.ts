@@ -1,33 +1,23 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, Vault } from 'obsidian';
-import { getAllDailyNotes, getDateFromFile } from "obsidian-daily-notes-interface";
-// Remember to rename these classes and interfaces!
+import { Plugin } from 'obsidian';
+import { getAllDailyNotes } from "obsidian-daily-notes-interface";
 
-interface MyPluginSettings {
-	mySetting: string;
-}
-
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
-}
-
-export default class MyPlugin extends Plugin {
-	settings?: MyPluginSettings;
-
-	override async onload() {
-		await this.loadSettings();
-
-		// This adds a simple command that can be triggered anywhere
+export default class DailyNav extends Plugin {
+	prepare() {
+		const allDailyNotes = getAllDailyNotes();
+		const allKeys = Object.keys(allDailyNotes).sort();
+		const activeFile = this.app.workspace.getActiveFile()!;
+		const activeNoteIdx = allKeys.findIndex(key => allDailyNotes[key]!.name === activeFile.name)!;
+		return { allDailyNotes, allKeys, activeNoteIdx }
+	}
+	override onload() {
 		this.addCommand({
 			id: 'open-yesterdays-note',
 			name: 'Open yesterday\'s note',
 			callback: () => {
-				const activeFile = this.app.workspace.getActiveFile()!;
-				const currentDate = getDateFromFile(activeFile, "day")!;
-				const allDailyNotes = getAllDailyNotes();
-				const dailyNoteKeys = Object.keys(allDailyNotes).sort().reverse();
-				const yesterday = dailyNoteKeys.find(key => getDateFromFile(allDailyNotes[key]!, "day")! < currentDate);
-				if(yesterday) {
-					this.app.workspace.openLinkText(allDailyNotes[yesterday]!.basename, '');
+				const { allDailyNotes, allKeys, activeNoteIdx } = this.prepare();
+				const yesterdayNote = allDailyNotes[allKeys[activeNoteIdx - 1]];
+				if(yesterdayNote) {
+					this.app.workspace.openLinkText(yesterdayNote.basename, '');
 				}
 			}
 		});
@@ -35,27 +25,12 @@ export default class MyPlugin extends Plugin {
 			id: 'open-tomorrows-note',
 			name: 'Open tomorrow\'s note',
 			callback: () => {
-				const activeFile = this.app.workspace.getActiveFile()!;
-				const currentDate = getDateFromFile(activeFile, "day")!;
-				const allDailyNotes = getAllDailyNotes();
-				const dailyNoteKeys = Object.keys(allDailyNotes).sort();
-				const yesterday = dailyNoteKeys.find(key => getDateFromFile(allDailyNotes[key]!, "day")! > currentDate);
-				if(yesterday) {
-					this.app.workspace.openLinkText(allDailyNotes[yesterday]!.basename, '');
+				const { allDailyNotes, allKeys, activeNoteIdx } = this.prepare();
+				const tomorrowNote = allDailyNotes[allKeys[activeNoteIdx + 1]];
+				if(tomorrowNote) {
+					this.app.workspace.openLinkText(tomorrowNote.basename, '');
 				}
 			}
 		});
-	}
-
-	override onunload() {
-
-	}
-
-	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-	}
-
-	async saveSettings() {
-		await this.saveData(this.settings);
 	}
 }
