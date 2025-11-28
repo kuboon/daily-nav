@@ -25,4 +25,7 @@ jobs:
         uses: denoland/setup-deno@v2
 
       - run: deno task build
-      - run: gh release create "$GITHUB_REF_NAME" manifest.json versions.json main.js --generate-notes
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" manifest.json versions.json main.js --generate-notes
