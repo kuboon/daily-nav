@@ -1,11 +1,11 @@
 {
-	"id": "daily-nav",
-	"name": "Daily Nav",
-	"version": "1.0.1",
-	"minAppVersion": "0.15.0",
-	"description": "Add commands to open yesterday/tomorrow's daily notes.",
-	"author": "kuboon",
-	"authorUrl": "https://o.kbn.one",
-	"fundingUrl": "https://github.com/sponsors/kuboon",
-	"isDesktopOnly": false
+  "id": "daily-nav",
+  "name": "Daily Nav",
+  "version": "1.0.2",
+  "minAppVersion": "1.10.0",
+  "description": "Open prev/next note based on explorer sorting order",
+  "author": "kuboon",
+  "authorUrl": "https://o.kbn.one",
+  "fundingUrl": "https://github.com/sponsors/kuboon",
+  "isDesktopOnly": false
 }
