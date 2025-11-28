@@ -1,4 +1,4 @@
-import { Plugin } from "obsidian";
+import { type App, Plugin } from "obsidian";
 import { getAllDailyNotes } from "obsidian-daily-notes-interface";
 
 export default class DailyNav extends Plugin {
@@ -34,16 +34,16 @@ export default class DailyNav extends Plugin {
         }
       },
     });
-    function openSiblingNote(offset: number) {
-      const explorer = this.app.workspace.getLeavesOfType("file-explorer")[0];
-      const currentPath = app.workspace.getActiveFile().path;
-      const filePaths = Object.keys(explorer.view.fileItems);
+    function openSiblingNote(app: App, offset: number) {
+      const explorer = app.workspace.getLeavesOfType("file-explorer")[0];
+      const currentPath = app.workspace.getActiveFile()!.path;
+      const filePaths = Object.keys((explorer.view as any).fileItems);
       const currentIdx = filePaths.indexOf(currentPath);
       const siblingIdx = currentIdx + offset;
       const siblingFilePath = filePaths[siblingIdx];
       if (siblingFilePath) {
-        this.app.workspace.getLeaf().openFile(
-          this.app.vault.getAbstractFileByPath(siblingFilePath)!,
+        app.workspace.getLeaf().openFile(
+          app.vault.getFileByPath(siblingFilePath)!,
         );
       }
     }
@@ -51,14 +51,14 @@ export default class DailyNav extends Plugin {
       id: "open-prev-note",
       name: "Open previous note on explorer view order",
       callback: () => {
-        openSiblingNote(-1);
+        openSiblingNote(this.app, -1);
       },
     });
     this.addCommand({
       id: "open-next-note",
       name: "Open next note on explorer view order",
       callback: () => {
-        openSiblingNote(1);
+        openSiblingNote(this.app, 1);
       },
     });
   }
