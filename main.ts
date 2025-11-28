@@ -35,10 +35,22 @@ export default class DailyNav extends Plugin {
       },
     });
     function openSiblingNote(app: App, offset: number) {
-      const explorer = app.workspace.getLeavesOfType("file-explorer")[0];
-      const currentPath = app.workspace.getActiveFile()!.path;
-      const filePaths = Object.keys((explorer.view as any).fileItems);
+      const explorerView = app.workspace.getLeavesOfType("file-explorer")[0]
+        ?.view;
+      if (!explorerView) return;
+
+      const currentPath = app.workspace.getActiveFile()?.path;
+      if (!currentPath) return;
+
+      // Type guard to safely access fileItems
+      const fileItems =
+        (explorerView as unknown as Record<string, unknown>).fileItems;
+      if (!fileItems || typeof fileItems !== "object") return;
+
+      const filePaths = Object.keys(fileItems);
       const currentIdx = filePaths.indexOf(currentPath);
+      if (currentIdx === -1) return;
+
       const siblingIdx = currentIdx + offset;
       const siblingFilePath = filePaths[siblingIdx];
       if (siblingFilePath) {
