@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
+      - "[0-9]+.[0-9]+.[0-9]+"
 
 permissions:
   contents: write
@@ -21,7 +21,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create Release
-        uses: ncipollo/release-action@v1
-        with:
-          generateReleaseNotes: true
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+
+      - run: deno task build
+      - run: gh release create "$GITHUB_REF_NAME" manifest.json versions.json main.js --generate-notes

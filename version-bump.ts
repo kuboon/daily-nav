@@ -12,4 +12,6 @@ if (version in versions) {
 versions[version] = minAppVersion;
 Deno.writeTextFileSync("versions.json", JSON.stringify(versions, null, "\t"));
 
-console.info(`Run 'git tag ${version}' to create a new tag`);
+console.info(
+  `Run 'git tag ${version}; git push origin ${version}' after git commit & push to create a new release.`,
+);
