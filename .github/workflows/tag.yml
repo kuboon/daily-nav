@@ -1,0 +1,49 @@
+name: Tag
+
+on:
+  push:
+    branches: ["deno"]
+
+jobs:
+  test:
+    uses: ./.github/workflows/deno.yml
+    permissions:
+      contents: read
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      tag_name: ${{ steps.get_tag.outputs.TAG_NAME }}
+    steps:
+      - uses: actions/checkout@v6
+      - id: get_tag
+        name: Get Local Tag Name
+        run: |
+          TAG_NAME=$(jq -r .version manifest.json)
+          if git fetch --depth 1 origin tag $TAG_NAME; then
+            echo "::notice::$TAG_NAME already released. skip publishing."
+            exit 0
+          fi
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_OUTPUT
+
+  tag:
+    needs:
+      - test
+      - check
+    if: needs.check.outputs.tag_name
+    env:
+      TAG_NAME: ${{ needs.check.outputs.tag_name }}
+    name: Create Tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v6
+      - name: Create Tag
+        run: |
+          git config user.email "o@kbn.one"
+          git config user.name "github action"
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
