@@ -11,4 +11,7 @@ if (equals(parse(minAppVersion), parse(latestMinAppVersion))) Deno.exit(0);
 
 // update versions.json with target version and minAppVersion from manifest.json
 versions[version] = minAppVersion;
-Deno.writeTextFileSync("versions.json", JSON.stringify(versions, null, "\t") + "\n");
+Deno.writeTextFileSync(
+  "versions.json",
+  JSON.stringify(versions, null, "\t") + "\n",
+);
