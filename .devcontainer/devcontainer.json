@@ -2,7 +2,7 @@
   "name": "Debian",
   "image": "mcr.microsoft.com/devcontainers/base",
   "features": {
-    "ghcr.io/devcontainers-extra/features/mise:1": {}
+    "ghcr.io/devcontainers-community/features/deno:1": {}
   },
   "customizations": {
     "vscode": {
@@ -10,18 +10,8 @@
         "denoland.vscode-deno"
       ],
       "settings": {
-        "deno.enable": true,
-        "deno.path": "/home/vscode/.local/share/mise/shims/deno"
+        "deno.enable": true
       }
     }
-  },
-  "postCreateCommand": "mise use -g deno"
-  // Features to add to the dev container. More info: https://containers.dev/features.
-  // "features": {},
-
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
-
-  // Configure tool-specific properties.
-  // "customizations": {},
+  }
 }
