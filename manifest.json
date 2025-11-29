@@ -1,7 +1,7 @@
 {
   "id": "daily-nav",
   "name": "Daily Nav",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "minAppVersion": "1.10.0",
   "description": "Open prev/next note based on explorer sorting order",
   "author": "kuboon",

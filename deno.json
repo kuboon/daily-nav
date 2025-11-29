@@ -29,7 +29,6 @@
     "@std/semver": "jsr:@std/semver@^1.0.7",
     "builtin-modules": "npm:builtin-modules@5.0.0",
     "esbuild": "npm:esbuild@^0.27.0",
-    "moment": "npm:moment@^2.30.1",
     "obsidian": "npm:obsidian@^1.10.3",
     "obsidian-daily-notes-interface": "https://esm.sh/obsidian-daily-notes-interface@0.9.4?external=obsidian"
   }

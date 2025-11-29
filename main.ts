@@ -1,4 +1,4 @@
-import { type App, Plugin } from "obsidian";
+import { Plugin } from "obsidian";
 import { getAllDailyNotes } from "obsidian-daily-notes-interface";
 
 export default class DailyNav extends Plugin {
@@ -19,7 +19,7 @@ export default class DailyNav extends Plugin {
         const { allDailyNotes, allKeys, activeNoteIdx } = this.prepare();
         const yesterdayNote = allDailyNotes[allKeys[activeNoteIdx - 1]];
         if (yesterdayNote) {
-          this.app.workspace.openLinkText(yesterdayNote.basename, "");
+          this.app.workspace.getLeaf().openFile(yesterdayNote);
         }
       },
     });
@@ -30,47 +30,8 @@ export default class DailyNav extends Plugin {
         const { allDailyNotes, allKeys, activeNoteIdx } = this.prepare();
         const tomorrowNote = allDailyNotes[allKeys[activeNoteIdx + 1]];
         if (tomorrowNote) {
-          this.app.workspace.openLinkText(tomorrowNote.basename, "");
+          this.app.workspace.getLeaf().openFile(tomorrowNote);
         }
-      },
-    });
-    function openSiblingNote(app: App, offset: number) {
-      const explorerView = app.workspace.getLeavesOfType("file-explorer")[0]
-        ?.view;
-      if (!explorerView) return;
-
-      const currentPath = app.workspace.getActiveFile()?.path;
-      if (!currentPath) return;
-
-      // Type guard to safely access fileItems
-      const fileItems =
-        (explorerView as unknown as Record<string, unknown>).fileItems;
-      if (!fileItems || typeof fileItems !== "object") return;
-
-      const filePaths = Object.keys(fileItems);
-      const currentIdx = filePaths.indexOf(currentPath);
-      if (currentIdx === -1) return;
-
-      const siblingIdx = currentIdx + offset;
-      const siblingFilePath = filePaths[siblingIdx];
-      if (siblingFilePath) {
-        app.workspace.getLeaf().openFile(
-          app.vault.getFileByPath(siblingFilePath)!,
-        );
-      }
-    }
-    this.addCommand({
-      id: "open-prev-note",
-      name: "Open previous note on explorer view order",
-      callback: () => {
-        openSiblingNote(this.app, -1);
-      },
-    });
-    this.addCommand({
-      id: "open-next-note",
-      name: "Open next note on explorer view order",
-      callback: () => {
-        openSiblingNote(this.app, 1);
       },
     });
   }
