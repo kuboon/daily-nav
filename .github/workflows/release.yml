@@ -40,6 +40,8 @@ jobs:
           fetch-depth: 0
       - name: Setup Deno
         uses: denoland/setup-deno@v2
+        with:
+          cache: true
       - name: bump version
         run: deno task version-bump
       - name: Create Tag
