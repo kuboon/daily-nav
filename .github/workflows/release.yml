@@ -35,6 +35,9 @@ jobs:
       TAG_NAME: ${{ needs.check_tag.outputs.TAG_NAME }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       - name: Setup Deno
         uses: denoland/setup-deno@v2
       - name: bump version
