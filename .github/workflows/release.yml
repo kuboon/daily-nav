@@ -8,10 +8,10 @@ on:
 jobs:
   test:
     uses: ./.github/workflows/test.yml
-  release:
+  check_tag:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    outputs:
+      TAG_NAME: ${{ steps.get_tag.outputs.TAG_NAME }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -26,13 +26,20 @@ jobs:
           fi
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_OUTPUT
 
+  release:
+    needs: [test, check_tag]
+    if: needs.check_tag.outputs.TAG_NAME != ''
+    permissions:
+      contents: write
+    env:
+      TAG_NAME: ${{ needs.check_tag.outputs.TAG_NAME }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Setup Deno
         uses: denoland/setup-deno@v2
       - name: bump version
         run: deno task version-bump
       - name: Create Tag
-        env:
-          TAG_NAME: ${{ steps.get_tag.outputs.TAG_NAME }}
         run: |
           git config user.email "o@kbn.one"
           git config user.name "github action"
