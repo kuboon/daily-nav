@@ -2,7 +2,7 @@
   "tasks": {
     "dev": "deno run --allow-env --allow-read --allow-write --allow-run --allow-net=esm.sh esbuild.config.ts",
     "build": "deno task dev production",
-    "version": "deno run --allow-read=. --allow-write=versions.json version-bump.ts && git add manifest.json versions.json"
+    "version-bump": "deno run --allow-read=. --allow-write=versions.json version-bump.ts && git add manifest.json versions.json"
   },
   "compilerOptions": {
     "noImplicitAny": true,
@@ -26,6 +26,7 @@
   },
   "imports": {
     "@deno/esbuild-plugin": "jsr:@deno/esbuild-plugin@^1.2.0",
+    "@std/semver": "jsr:@std/semver@^1.0.7",
     "builtin-modules": "npm:builtin-modules@5.0.0",
     "esbuild": "npm:esbuild@^0.27.0",
     "moment": "npm:moment@^2.30.1",
