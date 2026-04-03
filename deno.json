@@ -1,8 +1,31 @@
 {
   "tasks": {
-    "dev": "deno run --allow-env --allow-read --allow-write --allow-run --allow-net=esm.sh esbuild.config.ts",
-    "build": "deno task dev production",
-    "version-bump": "deno run --allow-read=. --allow-write=versions.json version-bump.ts && git add manifest.json versions.json"
+    "dev": "deno run -P=build esbuild.config.ts",
+    "build": "deno run -P=build esbuild.config.ts production",
+    "version-bump": "deno run -P=version-bump version-bump.ts && git add manifest.json versions.json"
+  },
+  "permissions": {
+    "build": {
+      "read": true,
+      "write": true,
+      "net": [
+        "esm.sh",
+        "jsr.io",
+        "registry.npmjs.org",
+        "deno.land"
+      ],
+      "run": true,
+      "env": true
+    },
+    "version-bump": {
+      "read": [
+        "./manifest.json",
+        "./versions.json"
+      ],
+      "write": [
+        "./versions.json"
+      ]
+    }
   },
   "compilerOptions": {
     "noImplicitAny": true,
@@ -25,11 +48,11 @@
     }
   },
   "imports": {
-    "@deno/esbuild-plugin": "jsr:@deno/esbuild-plugin@^1.2.0",
-    "@std/semver": "jsr:@std/semver@^1.0.7",
+    "@deno/esbuild-plugin": "jsr:@deno/esbuild-plugin@^1.2.1",
+    "@std/semver": "jsr:@std/semver@^1.0.8",
     "builtin-modules": "npm:builtin-modules@5.0.0",
-    "esbuild": "npm:esbuild@^0.27.0",
-    "obsidian": "npm:obsidian@^1.10.3",
+    "esbuild": "npm:esbuild@^0.27.7",
+    "obsidian": "npm:obsidian@^1.12.3",
     "obsidian-daily-notes-interface": "https://esm.sh/obsidian-daily-notes-interface@0.9.4?external=obsidian"
   }
 }

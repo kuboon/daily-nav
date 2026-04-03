@@ -1,5 +1,9 @@
 import { Plugin } from "obsidian";
 import { getAllDailyNotes } from "obsidian-daily-notes-interface";
+import {
+  DailyCalendarView,
+  VIEW_TYPE_DAILY_CALENDAR,
+} from "./ui/daily-calendar-view.ts";
 
 export default class DailyNav extends Plugin {
   prepare() {
@@ -11,7 +15,23 @@ export default class DailyNav extends Plugin {
     )!;
     return { allDailyNotes, allKeys, activeNoteIdx };
   }
+
   override onload() {
+    this.registerView(
+      VIEW_TYPE_DAILY_CALENDAR,
+      (leaf) => new DailyCalendarView(leaf, this.app),
+    );
+
+    this.addCommand({
+      id: "open-daily-calendar",
+      name: "Open daily calendar panel",
+      callback: () => this.activateDailyCalendarView(),
+    });
+
+    this.addRibbonIcon("calendar", "Open daily calendar", () => {
+      this.activateDailyCalendarView();
+    });
+
     this.addCommand({
       id: "open-yesterdays-note",
       name: "Open yesterday's note",
@@ -34,5 +54,23 @@ export default class DailyNav extends Plugin {
         }
       },
     });
+  }
+
+  override onunload() {
+    this.app.workspace.detachLeavesOfType(VIEW_TYPE_DAILY_CALENDAR);
+  }
+
+  private async activateDailyCalendarView(): Promise<void> {
+    let leaf = this.app.workspace.getLeavesOfType(VIEW_TYPE_DAILY_CALENDAR)[0];
+    if (!leaf) {
+      const rightLeaf = this.app.workspace.getRightLeaf(false);
+      if (!rightLeaf) return;
+      leaf = rightLeaf;
+      await leaf.setViewState({
+        type: VIEW_TYPE_DAILY_CALENDAR,
+        active: true,
+      });
+    }
+    await this.app.workspace.revealLeaf(leaf);
   }
 }
