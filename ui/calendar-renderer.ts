@@ -64,28 +64,33 @@ export class CalendarRenderer {
     const wrapper = el("div", "daily-calendar");
     this.container.appendChild(wrapper);
 
-    // Nav
-    this.renderNav(wrapper);
-
-    // Range label
+    // Range label at top
     this.rangeEl = el("div", "daily-calendar-range");
     wrapper.appendChild(this.rangeEl);
+
+    // Weekday header (outside scroll area)
+    const headerGrid = el(
+      "div",
+      "daily-calendar-grid daily-calendar-header-row",
+    );
+    headerGrid.appendChild(
+      elText("div", "W", "daily-calendar-weekday daily-calendar-week-header"),
+    );
+    for (const day of ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]) {
+      headerGrid.appendChild(elText("div", day, "daily-calendar-weekday"));
+    }
+    wrapper.appendChild(headerGrid);
 
     // Scrollable viewport fills remaining height
     this.viewport = el("div", "daily-calendar-viewport");
     wrapper.appendChild(this.viewport);
 
-    // Grid inside viewport
+    // Nav at bottom
+    this.renderNav(wrapper);
+
+    // Grid inside viewport (no header)
     this.grid = el("div", "daily-calendar-grid");
     this.viewport.appendChild(this.grid);
-
-    // Sticky header row
-    this.grid.appendChild(
-      elText("div", "W", "daily-calendar-weekday daily-calendar-week-header"),
-    );
-    for (const day of ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]) {
-      this.grid.appendChild(elText("div", day, "daily-calendar-weekday"));
-    }
 
     // First render to measure row height
     await this.buildWeeks(20); // render 20 weeks to measure
@@ -133,10 +138,8 @@ export class CalendarRenderer {
     if (this.rendering) return;
     this.rendering = true;
 
-    // Clear day cells but keep sticky header (first 8 children)
-    while (this.grid.children.length > 8) {
-      this.grid.removeChild(this.grid.lastChild!);
-    }
+    // Clear all cells
+    this.grid.innerHTML = "";
 
     const totalWeeks = this.visibleWeeks * 3;
     const halfWeeks = Math.floor(totalWeeks / 2);
@@ -156,8 +159,7 @@ export class CalendarRenderer {
     }
 
     // Center scroll: the center week should be in the middle of viewport
-    const headerHeight = (this.grid.children[0] as HTMLElement).offsetHeight;
-    this.viewport.scrollTop = halfWeeks * this.rowHeight + headerHeight -
+    this.viewport.scrollTop = halfWeeks * this.rowHeight -
       this.viewport.clientHeight / 2 +
       this.rowHeight / 2;
 
@@ -282,13 +284,12 @@ export class CalendarRenderer {
 
     const totalWeeks = this.visibleWeeks * 3;
     const halfWeeks = Math.floor(totalWeeks / 2);
-    const headerHeight = (this.grid.children[0] as HTMLElement).offsetHeight;
 
     // Current center of viewport in scroll coordinates
     const viewportCenter = this.viewport.scrollTop +
       this.viewport.clientHeight / 2;
     // Expected center (the center week row)
-    const expectedCenter = halfWeeks * this.rowHeight + headerHeight +
+    const expectedCenter = halfWeeks * this.rowHeight +
       this.rowHeight / 2;
 
     const weeksMoved = Math.round(

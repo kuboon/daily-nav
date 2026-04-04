@@ -91,15 +91,15 @@
   color: var(--text-muted);
 }
 
+.daily-calendar-header-row {
+  flex: none;
+}
+
 .daily-calendar-weekday {
   font-size: 0.7em;
   font-weight: 600;
   color: var(--text-muted);
   padding: 4px 0;
-  position: sticky;
-  top: 0;
-  background: var(--background-primary, #1e1e1e);
-  z-index: 1;
 }
 
 .daily-calendar-day {
