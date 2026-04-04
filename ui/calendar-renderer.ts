@@ -34,7 +34,11 @@ export class CalendarRenderer {
   private visibleWeeks = 0;
   private rendering = false;
 
-  constructor(container: HTMLElement, dataSource: CalendarDataSource, initialDate?: Date) {
+  constructor(
+    container: HTMLElement,
+    dataSource: CalendarDataSource,
+    initialDate?: Date,
+  ) {
     this.container = container;
     this.dataSource = dataSource;
     // Snap to Monday of the week containing initialDate
@@ -76,7 +80,9 @@ export class CalendarRenderer {
     this.viewport.appendChild(this.grid);
 
     // Sticky header row
-    this.grid.appendChild(elText("div", "W", "daily-calendar-weekday daily-calendar-week-header"));
+    this.grid.appendChild(
+      elText("div", "W", "daily-calendar-weekday daily-calendar-week-header"),
+    );
     for (const day of ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]) {
       this.grid.appendChild(elText("div", day, "daily-calendar-weekday"));
     }
@@ -98,21 +104,28 @@ export class CalendarRenderer {
   private measureRow(): void {
     if (!this.viewport || !this.grid) return;
     // Find first week cell to measure row height
-    const weekCell = this.grid.querySelector(".daily-calendar-week") as HTMLElement | null;
+    const weekCell = this.grid.querySelector(".daily-calendar-week") as
+      | HTMLElement
+      | null;
     if (!weekCell) return;
     // Row height = height of 8-cell grid row (week + 7 days)
     // Measure from one week cell to the next
     const allWeekCells = this.grid.querySelectorAll(".daily-calendar-week");
     if (allWeekCells.length >= 2) {
-      const first = (allWeekCells[0] as HTMLElement).getBoundingClientRect().top;
-      const second = (allWeekCells[1] as HTMLElement).getBoundingClientRect().top;
+      const first =
+        (allWeekCells[0] as HTMLElement).getBoundingClientRect().top;
+      const second =
+        (allWeekCells[1] as HTMLElement).getBoundingClientRect().top;
       this.rowHeight = second - first;
     } else {
       // Fallback: use cell offsetHeight + gap
       this.rowHeight = weekCell.offsetHeight + 1;
     }
     if (this.rowHeight <= 0) this.rowHeight = 34; // safety fallback
-    this.visibleWeeks = Math.max(4, Math.ceil(this.viewport.clientHeight / this.rowHeight));
+    this.visibleWeeks = Math.max(
+      4,
+      Math.ceil(this.viewport.clientHeight / this.rowHeight),
+    );
   }
 
   private async renderGrid(): Promise<void> {
@@ -134,16 +147,19 @@ export class CalendarRenderer {
     // Update range label (visible portion only)
     const visibleHalf = Math.floor(this.visibleWeeks / 2);
     const visibleFirst = addDays(this.centerDate, -visibleHalf * 7);
-    const visibleLast = addDays(this.centerDate, (this.visibleWeeks - visibleHalf) * 7 - 1);
+    const visibleLast = addDays(
+      this.centerDate,
+      (this.visibleWeeks - visibleHalf) * 7 - 1,
+    );
     if (this.rangeEl) {
       this.rangeEl.textContent = `${fmt(visibleFirst)} ~ ${fmt(visibleLast)}`;
     }
 
     // Center scroll: the center week should be in the middle of viewport
     const headerHeight = (this.grid.children[0] as HTMLElement).offsetHeight;
-    this.viewport.scrollTop = halfWeeks * this.rowHeight + headerHeight
-      - this.viewport.clientHeight / 2
-      + this.rowHeight / 2;
+    this.viewport.scrollTop = halfWeeks * this.rowHeight + headerHeight -
+      this.viewport.clientHeight / 2 +
+      this.rowHeight / 2;
 
     this.rendering = false;
   }
@@ -158,7 +174,8 @@ export class CalendarRenderer {
     const todayKey = dateKey(stripTime(new Date()));
 
     // Track month boundaries: weekIndex where the 1st appears
-    const monthMarkers: { weekIndex: number; month: number; isOdd: boolean }[] = [];
+    const monthMarkers: { weekIndex: number; month: number; isOdd: boolean }[] =
+      [];
 
     const cursor = new Date(firstMonday);
     for (let w = 0; w < totalWeeks; w++) {
@@ -166,7 +183,10 @@ export class CalendarRenderer {
       const [isoYear, isoWeek] = isoWeekOfDate(cursor);
       const weekEl = elText("div", `W${isoWeek}`, "daily-calendar-week");
       weekEl.setAttribute("aria-label", `${isoYear}-W${pad2(isoWeek)}`);
-      weekEl.addEventListener("click", () => this.dataSource.onWeekClick(isoYear, isoWeek));
+      weekEl.addEventListener(
+        "click",
+        () => this.dataSource.onWeekClick(isoYear, isoWeek),
+      );
       this.grid.appendChild(weekEl);
 
       // 7 day cells
@@ -182,7 +202,9 @@ export class CalendarRenderer {
         if (info?.hasUnchecked) classes.push("daily-calendar-day-unchecked");
 
         const dayEl = el("div", classes.join(" "));
-        dayEl.appendChild(elText("div", String(date.getDate()), "daily-calendar-day-num"));
+        dayEl.appendChild(
+          elText("div", String(date.getDate()), "daily-calendar-day-num"),
+        );
 
         if (info?.heading) {
           const label = elText("div", info.heading, "daily-calendar-day-label");
@@ -244,7 +266,11 @@ export class CalendarRenderer {
       overlay.style.left = `${left}px`;
       overlay.style.width = `${right - left}px`;
       overlay.style.height = `${height}px`;
-      const num = elText("span", String(marker.month), "daily-calendar-month-overlay-num");
+      const num = elText(
+        "span",
+        String(marker.month),
+        "daily-calendar-month-overlay-num",
+      );
       overlay.appendChild(num);
       this.grid.appendChild(overlay);
     }
@@ -259,11 +285,15 @@ export class CalendarRenderer {
     const headerHeight = (this.grid.children[0] as HTMLElement).offsetHeight;
 
     // Current center of viewport in scroll coordinates
-    const viewportCenter = this.viewport.scrollTop + this.viewport.clientHeight / 2;
+    const viewportCenter = this.viewport.scrollTop +
+      this.viewport.clientHeight / 2;
     // Expected center (the center week row)
-    const expectedCenter = halfWeeks * this.rowHeight + headerHeight + this.rowHeight / 2;
+    const expectedCenter = halfWeeks * this.rowHeight + headerHeight +
+      this.rowHeight / 2;
 
-    const weeksMoved = Math.round((viewportCenter - expectedCenter) / this.rowHeight);
+    const weeksMoved = Math.round(
+      (viewportCenter - expectedCenter) / this.rowHeight,
+    );
     if (weeksMoved === 0) return;
 
     this.centerDate = addDays(this.centerDate, weeksMoved * 7);
@@ -351,6 +381,8 @@ function isoWeekOfDate(d: Date): [number, number] {
   const tmp = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
   tmp.setUTCDate(tmp.getUTCDate() + 4 - (tmp.getUTCDay() || 7));
   const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(), 0, 1));
-  const weekNo = Math.ceil((((tmp.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
+  const weekNo = Math.ceil(
+    (((tmp.getTime() - yearStart.getTime()) / 86400000) + 1) / 7,
+  );
   return [tmp.getUTCFullYear(), weekNo];
 }

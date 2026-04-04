@@ -1,14 +1,27 @@
-import { App, ItemView, moment, Notice, type TFile, WorkspaceLeaf } from "obsidian";
+import {
+  App,
+  ItemView,
+  moment,
+  Notice,
+  type TFile,
+  WorkspaceLeaf,
+} from "obsidian";
 import {
   appHasDailyNotesPluginLoaded,
   createDailyNote,
   getAllDailyNotes,
   getDailyNote,
 } from "obsidian-daily-notes-interface";
-import { CalendarRenderer, type CalendarDataSource, type DayInfo } from "./calendar-renderer.ts";
+import {
+  type CalendarDataSource,
+  CalendarRenderer,
+  type DayInfo,
+} from "./calendar-renderer.ts";
 
 type Moment = moment.Moment;
-const m = moment as unknown as (...args: Parameters<typeof moment.utc>) => Moment;
+const m = moment as unknown as (
+  ...args: Parameters<typeof moment.utc>
+) => Moment;
 
 export const VIEW_TYPE_DAILY_CALENDAR = "daily-calendar-view";
 
@@ -39,9 +52,15 @@ export class DailyCalendarView extends ItemView {
     const dataSource = new ObsidianDataSource(this.app, () => m());
     this.renderer = new CalendarRenderer(container, dataSource);
     await this.renderer.render();
-    this.registerEvent(this.app.vault.on("create", () => this.renderer.render()));
-    this.registerEvent(this.app.vault.on("delete", () => this.renderer.render()));
-    this.registerEvent(this.app.vault.on("rename", () => this.renderer.render()));
+    this.registerEvent(
+      this.app.vault.on("create", () => this.renderer.render()),
+    );
+    this.registerEvent(
+      this.app.vault.on("delete", () => this.renderer.render()),
+    );
+    this.registerEvent(
+      this.app.vault.on("rename", () => this.renderer.render()),
+    );
   }
 }
 
@@ -51,15 +70,22 @@ class ObsidianDataSource implements CalendarDataSource {
     private now: () => Moment,
   ) {}
 
-  async loadRange(firstDay: Date, lastDay: Date): Promise<Map<string, DayInfo>> {
+  async loadRange(
+    firstDay: Date,
+    lastDay: Date,
+  ): Promise<Map<string, DayInfo>> {
     const result = new Map<string, DayInfo>();
     if (!appHasDailyNotesPluginLoaded()) return result;
 
     const allDailyNotes = getAllDailyNotes();
     const cursor = this.now().clone();
-    cursor.year(firstDay.getFullYear()).month(firstDay.getMonth()).date(firstDay.getDate()).startOf("day");
+    cursor.year(firstDay.getFullYear()).month(firstDay.getMonth()).date(
+      firstDay.getDate(),
+    ).startOf("day");
     const end = this.now().clone();
-    end.year(lastDay.getFullYear()).month(lastDay.getMonth()).date(lastDay.getDate()).startOf("day");
+    end.year(lastDay.getFullYear()).month(lastDay.getMonth()).date(
+      lastDay.getDate(),
+    ).startOf("day");
 
     while (cursor.isSameOrBefore(end, "day")) {
       const file = getDailyNote(cursor, allDailyNotes);
@@ -78,7 +104,9 @@ class ObsidianDataSource implements CalendarDataSource {
 
   onDayClick(date: Date): void {
     if (!appHasDailyNotesPluginLoaded()) {
-      new Notice("Daily Notes (or Periodic Notes daily setting) is not enabled.");
+      new Notice(
+        "Daily Notes (or Periodic Notes daily setting) is not enabled.",
+      );
       return;
     }
     const momentDate = this.toMoment(date);
@@ -107,6 +135,8 @@ class ObsidianDataSource implements CalendarDataSource {
 
   private toMoment(date: Date): Moment {
     const d = this.now();
-    return d.year(date.getFullYear()).month(date.getMonth()).date(date.getDate()).startOf("day");
+    return d.year(date.getFullYear()).month(date.getMonth()).date(
+      date.getDate(),
+    ).startOf("day");
   }
 }
