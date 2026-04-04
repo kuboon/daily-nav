@@ -94,8 +94,16 @@ export class CalendarRenderer {
 
     // First render to measure row height
     await this.buildWeeks(20); // render 20 weeks to measure
-    await frame();
+
+    // Wait for layout to settle (Obsidian may need extra frames)
+    await this.waitForLayout();
     this.measureRow();
+
+    // If row height looks too small, retry after a short delay
+    if (this.rowHeight < 20) {
+      await delay(100);
+      this.measureRow();
+    }
 
     // Now re-render with correct 3x buffer
     await this.renderGrid();
@@ -105,6 +113,28 @@ export class CalendarRenderer {
   }
 
   // ── Internal ──
+
+  /** Wait until the viewport has a non-zero size (handles deferred layout in Obsidian) */
+  private async waitForLayout(): Promise<void> {
+    // Double rAF to ensure paint + layout cycle completes
+    await frame();
+    await frame();
+    if (this.viewport && this.viewport.clientHeight > 0) {
+      return;
+    }
+    return new Promise((resolve) => {
+      const observer = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.contentRect.height > 0) {
+            observer.disconnect();
+            resolve();
+            return;
+          }
+        }
+      });
+      observer.observe(this.viewport!);
+    });
+  }
 
   private measureRow(): void {
     if (!this.viewport || !this.grid) return;
@@ -183,7 +213,7 @@ export class CalendarRenderer {
     for (let w = 0; w < totalWeeks; w++) {
       // Week number cell
       const [isoYear, isoWeek] = isoWeekOfDate(cursor);
-      const weekEl = elText("div", `W${isoWeek}`, "daily-calendar-week");
+      const weekEl = elText("div", `W${pad2(isoWeek)}`, "daily-calendar-week");
       weekEl.setAttribute("aria-label", `${isoYear}-W${pad2(isoWeek)}`);
       weekEl.addEventListener(
         "click",
@@ -328,6 +358,10 @@ export class CalendarRenderer {
 
 function frame(): Promise<void> {
   return new Promise((r) => requestAnimationFrame(() => r()));
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, ms));
 }
 
 function el(tag: string, cls: string): HTMLElement {

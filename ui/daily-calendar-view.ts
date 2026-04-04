@@ -122,7 +122,7 @@ class ObsidianDataSource implements CalendarDataSource {
   }
 
   onWeekClick(isoYear: number, isoWeek: number): void {
-    const filename = `${isoYear}W${(`0${isoWeek}`).slice(-2)}`;
+    const filename = `${isoYear}-W${(`0${isoWeek}`).slice(-2)}`;
     const file = this.app.vault.getAbstractFileByPath(`${filename}.md`);
     if (file) {
       this.app.workspace.getLeaf(true).openFile(file as TFile);
