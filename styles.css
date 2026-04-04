@@ -1,5 +1,15 @@
 .daily-calendar {
   padding: 8px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.daily-calendar-viewport {
+  flex: 1 1 0;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .daily-calendar-header {
@@ -58,6 +68,7 @@
   grid-template-columns: auto repeat(7, minmax(0, 1fr));
   gap: 1px;
   text-align: center;
+  position: relative;
 }
 
 .daily-calendar-week-header,
@@ -85,6 +96,10 @@
   font-weight: 600;
   color: var(--text-muted);
   padding: 4px 0;
+  position: sticky;
+  top: 0;
+  background: var(--background-primary, #1e1e1e);
+  z-index: 1;
 }
 
 .daily-calendar-day {
@@ -97,6 +112,48 @@
   flex-direction: column;
   align-items: center;
   min-height: 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.daily-calendar-week {
+  z-index: 1;
+}
+
+/* Month overlay — absolutely positioned behind day cells */
+.daily-calendar-month-overlay {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.daily-calendar-month-overlay-num {
+  font-size: 7em;
+  font-weight: 900;
+  line-height: 1;
+}
+
+/* Odd months: green bg, number "knocked out" in bg color */
+.daily-calendar-month-overlay-odd {
+  background: rgba(80, 180, 100, 0.08);
+}
+
+.daily-calendar-month-overlay-odd .daily-calendar-month-overlay-num {
+  color: var(--background-primary, #1e1e1e);
+}
+
+/* Even months: transparent bg, green number */
+.daily-calendar-month-overlay-even {
+  background: transparent;
+}
+
+.daily-calendar-month-overlay-even .daily-calendar-month-overlay-num {
+  color: rgba(80, 180, 100, 0.08);
 }
 
 .daily-calendar-day-num {

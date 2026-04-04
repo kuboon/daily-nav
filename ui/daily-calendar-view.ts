@@ -34,9 +34,11 @@ export class DailyCalendarView extends ItemView {
   override async onOpen(): Promise<void> {
     await Promise.resolve();
     const container = this.containerEl.children[1] as HTMLElement;
+    container.style.height = "100%";
+    container.style.overflow = "hidden";
     const dataSource = new ObsidianDataSource(this.app, () => m());
     this.renderer = new CalendarRenderer(container, dataSource);
-    this.renderer.render();
+    await this.renderer.render();
     this.registerEvent(this.app.vault.on("create", () => this.renderer.render()));
     this.registerEvent(this.app.vault.on("delete", () => this.renderer.render()));
     this.registerEvent(this.app.vault.on("rename", () => this.renderer.render()));
