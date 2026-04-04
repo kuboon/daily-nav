@@ -2,6 +2,7 @@
   "tasks": {
     "dev": "deno run -P=build esbuild.config.ts",
     "build": "deno run -P=build esbuild.config.ts production",
+    "preview": "deno run -P=build esbuild.config.ts preview",
     "version-bump": "deno run -P=version-bump version-bump.ts && git add manifest.json versions.json"
   },
   "permissions": {

@@ -10,7 +10,25 @@ if you want to view the source, please visit the github repository of this plugi
 */
 `;
 
-const prod = Deno.args[0] === "production";
+const mode = Deno.args[0]; // "production" | "preview" | undefined (dev)
+
+if (mode === "preview") {
+  const ctx = await esbuild.context({
+    plugins: [denoPlugin()],
+    entryPoints: ["ui/calendar-renderer.ts"],
+    bundle: true,
+    format: "esm",
+    target: "es2018",
+    logLevel: "info",
+    outdir: "ui",
+  });
+  const result = await ctx.serve({ servedir: ".", port: 3000 });
+  console.log(`Preview: http://localhost:${result.port}/ui/preview.html`);
+  // keeps running until Ctrl+C
+  await new Promise(() => {});
+}
+
+const prod = mode === "production";
 
 const context = await esbuild.context({
   plugins: [denoPlugin()],

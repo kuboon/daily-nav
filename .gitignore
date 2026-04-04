@@ -9,6 +9,9 @@ node_modules
 # They should be uploaded to GitHub releases instead.
 main.js
 
+# Generated preview bundle
+ui/calendar-renderer.js
+
 # Exclude sourcemaps
 *.map
 

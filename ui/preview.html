@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Calendar Preview</title>
+<style>
+  :root {
+    --text-normal: #d4d4d4;
+    --text-muted: #888;
+    --text-faint: #555;
+    --text-on-accent: #fff;
+    --text-error: #e5534b;
+    --interactive-accent: #7c5cbf;
+    --background-modifier-hover: rgba(255,255,255,0.06);
+    --background-modifier-border: rgba(255,255,255,0.1);
+  }
+  body {
+    background: #1e1e1e;
+    color: var(--text-normal);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 24px;
+  }
+  #calendar-root {
+    width: 320px;
+  }
+</style>
+<link rel="stylesheet" href="../styles.css">
+<script type="module">
+import { CalendarRenderer } from "./calendar-renderer.js";
+
+/** Dummy data source for browser preview */
+class PreviewDataSource {
+  constructor() {
+    // Generate some dummy notes around the current month
+    this.notes = new Map();
+    const today = new Date();
+    const base = new Date(today.getFullYear(), today.getMonth(), 1);
+    const dummyEntries = [
+      [-3, "買い出し", false],
+      [-1, "ミーティング", true],
+      [0, "リリース準備", true],
+      [1, "振り返り", false],
+      [3, "設計レビュー", false],
+      [5, "デプロイ", true],
+      [7, "1on1", false],
+      [10, "", false],
+      [14, "スプリント計画", true],
+      [-10, "障害対応", false],
+      [-15, "月次報告", false],
+      [20, "合宿", false],
+      [25, "締め切り", true],
+      [-25, "キックオフ", false],
+      [35, "来月の準備", false],
+    ];
+    for (const [offset, heading, hasUnchecked] of dummyEntries) {
+      const d = new Date(base);
+      d.setDate(d.getDate() + offset);
+      const key = `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+      this.notes.set(key, { heading, hasUnchecked });
+    }
+  }
+
+  async loadRange(_firstDay, _lastDay) {
+    return this.notes;
+  }
+
+  onDayClick(date) {
+    const key = `${date.getFullYear()}-${pad2(date.getMonth()+1)}-${pad2(date.getDate())}`;
+    console.log("Day clicked:", key);
+    alert(`Day: ${key}`);
+  }
+
+  onWeekClick(isoYear, isoWeek) {
+    const label = `${isoYear}W${pad2(isoWeek)}`;
+    console.log("Week clicked:", label);
+    alert(`Week: ${label}`);
+  }
+}
+
+function pad2(n) { return (`0${n}`).slice(-2); }
+
+const root = document.getElementById("calendar-root");
+const renderer = new CalendarRenderer(root, new PreviewDataSource());
+renderer.render();
+</script>
+</head>
+<body>
+  <div id="calendar-root"></div>
+</body>
+</html>
